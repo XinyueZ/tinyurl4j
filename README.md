@@ -4,7 +4,7 @@ A library to get tinyurl by calling [TinyurlWrapper](https://github.com/XinyueZ/
 Code
 ============
 
-```
+```java
 String input = ((EditText)findViewById(R.id.input_et)).getText().toString();
 Api.call(input, new TinyUrl4JListener() {
   @Override

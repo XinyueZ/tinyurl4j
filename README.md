@@ -1,5 +1,6 @@
 # tinyurl4j
-A library to get tinyurl by calling [TinyurlWrapper](https://github.com/XinyueZ/tinyurl-wrapper) for Android.
+- A library to get tinyurl by calling [TinyurlWrapper](https://github.com/XinyueZ/tinyurl-wrapper) for Android.
+- [Download](https://github.com/XinyueZ/tinyurl4j/tree/master/tinyurl4j/release)
 
 Code
 ============
@@ -26,7 +27,7 @@ Api.call(input, new TinyUrl4JListener() {
         });
       }
     }
-    });
+  });
 ```
 
 License

@@ -3,7 +3,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "21.0.0"
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
         minSdkVersion 9
@@ -29,3 +29,17 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.2.0'
     compile 'com.google.code.gson:gson:2.3.1'
 }
+
+task clearJar(type: Delete) {
+    delete 'build/libs/' + 'tinyurl4j' + '-' + android.defaultConfig.versionName + '.jar'
+}
+
+
+task makeJar(type: Copy) {
+    from('build/intermediates/bundles/release/')
+    into('../release/')
+    include('classes.jar')
+    rename('classes.jar', 'tinyurl4j' + '-' + android.defaultConfig.versionName + '.jar')
+}
+
+makeJar.dependsOn(clearJar, build)

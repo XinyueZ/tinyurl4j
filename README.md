@@ -1,6 +1,8 @@
 # tinyurl4j
 - A library to get tinyurl by calling [TinyurlWrapper](https://github.com/XinyueZ/tinyurl-wrapper) for Android.
 - [Download](https://github.com/XinyueZ/tinyurl4j/tree/master/tinyurl4j/release)
+- Sample:
+[![https://play.google.com/store/apps/details?id=com.tinyurl4j.sample](https://dl.dropbox.com/s/phrg0387osr3riz/images.jpeg)](https://play.google.com/store/apps/details?id=com.tinyurl4j.sample)
 
 Code
 ============

@@ -3,57 +3,42 @@ package com.tinyurl4j.sample;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.chopping.activities.BaseActivity;
+import com.chopping.application.BasicPrefs;
 import com.tinyurl4j.Api;
 import com.tinyurl4j.TinyUrl4JListener;
 import com.tinyurl4j.data.Response;
 
-
-public class MainActivity extends ActionBarActivity {
+/**
+ * Demo for tinyurl4j.
+ *
+ * @author Xinyue Zhao
+ */
+public class MainActivity extends BaseActivity {
+	/**
+	 * Main layout for this component.
+	 */
+	private static final int LAYOUT = R.layout.activity_main;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(LAYOUT);
 	}
 
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-
-		//noinspection SimplifiableIfStatement
-		if (id == R.id.action_settings) {
-			return true;
-		}
-
-		return super.onOptionsItemSelected(item);
-	}
 
 	public void toTinyUrl(View view) {
-		String input = ((EditText)findViewById(R.id.input_et)).getText().toString();
+		String input = ((EditText) findViewById(R.id.input_et)).getText().toString();
 		Api.call(input, new TinyUrl4JListener() {
 			@Override
 			public void onResponse(Response response) {
-				if(response != null) {
+				if (response != null) {
 					Button outputBtn = (Button) findViewById(R.id.output_btn);
 					outputBtn.setVisibility(View.VISIBLE);
 					outputBtn.setText(response.getResult());
@@ -63,7 +48,7 @@ public class MainActivity extends ActionBarActivity {
 						@Override
 						public void onClick(View v) {
 							Button btn = (Button) v;
-							if( !TextUtils.isEmpty(btn.getText())) {
+							if (!TextUtils.isEmpty(btn.getText())) {
 								startActivity(i);
 							}
 						}
@@ -72,4 +57,33 @@ public class MainActivity extends ActionBarActivity {
 			}
 		});
 	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	//Generated for Chopping bootstrap.
+	///////////////////////////////////////////////////////////////////////////////////////////////
+
+	@Override
+	protected BasicPrefs getPrefs() {
+		return Prefs.getInstance();
+	}
+	@Override
+	protected void onAppConfigLoaded() {
+		super.onAppConfigLoaded();
+		showAppList();
+	}
+
+	@Override
+	protected void onAppConfigIgnored() {
+		super.onAppConfigIgnored();
+		showAppList();
+	}
+
+	/**
+	 * Show all external applications links.
+	 */
+	private void showAppList() {
+		getSupportFragmentManager().beginTransaction().replace(R.id.app_list_fl, AppListImpFragment.newInstance(this))
+				.commit();
+	}
+
 }

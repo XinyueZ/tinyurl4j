@@ -1,2 +1,4 @@
-include ':app', ':library'
+include ':app', ':library', ':ChoppingBootstrap', ':volley_cz'
 project(':library').projectDir = new File('../tinyurl4j/app')
+project(':ChoppingBootstrap').projectDir = new File('submodules/ChoppingBootstrap')
+project(':volley_cz').projectDir = new File('submodules/ChoppingBootstrap/submodules/volley_cz')

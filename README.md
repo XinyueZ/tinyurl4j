@@ -34,7 +34,7 @@ Api.call(input, new TinyUrl4JListener() {
 
 License
 =======
-                Copyright 2012 Xinyue Zhao
+                Copyright 2015 Xinyue Zhao
 
  	    Licensed under the Apache License, Version 2.0 (the "License");
  	    you may not use this file except in compliance with the License.

@@ -11,20 +11,46 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.ResponseBody;
 import com.tinyurl4j.data.Response;
 
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.http.GET;
+import retrofit.http.Query;
+
 /**
  * Defines static functions to call <a href="https://github.com/XinyueZ/tinyurl-wrapper">TinyUrlWrapper</a>.
  *
  * @author Xinyue Zhao
  */
 public final class Api {
+	public interface S {
+		@GET("/")
+		void getTinyUrl(@Query("q") String q, Callback<Response> callback);
+	}
+
 	/**
 	 * The GSON parser.
 	 */
 	private static final Gson sGson = new Gson();
+	private static final String HOST = "https://tinyurl-wrapper.appspot.com/";
 	/**
 	 * Call url of <a href="https://github.com/XinyueZ/tinyurl-wrapper">TinyUrlWrapper</a>.
 	 */
-	private static final String BASE_URL = "https://tinyurl-wrapper.appspot.com/?q=";
+	private static final String BASE_URL = HOST + "?q=";
+
+	/**
+	 * Call <a href="https://github.com/XinyueZ/tinyurl-wrapper">TinyUrlWrapper</a> to transform {@code q} into
+	 * tinyurl.
+	 *
+	 * @param q
+	 * 		The original url to transform.
+	 * @param callback
+	 * 		Callback when this call finishes.
+	 */
+	public static final void getTinyUrl(String q, Callback<Response> callback) {
+		RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(HOST).build();
+		S s = restAdapter.create(S.class);
+		s.getTinyUrl(q, callback);
+	}
 
 	/**
 	 * Call <a href="https://github.com/XinyueZ/tinyurl-wrapper">TinyUrlWrapper</a> to transform {@code q} into
@@ -34,6 +60,8 @@ public final class Api {
 	 * 		The original url to transform.
 	 * @param listener
 	 * 		Callback when this call finishes.
+	 *
+	 * @deprecated Use new API {@link #getTinyUrl}.
 	 */
 	public static void call(String q, TinyUrl4JListener listener) {
 		W w = new W(BASE_URL + q, listener);

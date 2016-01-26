@@ -1,109 +1,60 @@
 package com.tinyurl4j;
 
-import java.io.IOException;
-
-import android.os.AsyncTask;
-import android.support.v4.os.AsyncTaskCompat;
-
-import com.google.gson.Gson;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.ResponseBody;
 import com.tinyurl4j.data.Response;
 
-import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.http.GET;
-import retrofit.http.Query;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.GsonConverterFactory;
+import retrofit2.Retrofit;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
+
 
 /**
  * Defines static functions to call <a href="https://github.com/XinyueZ/tinyurl-wrapper">TinyUrlWrapper</a>.
  *
  * @author Xinyue Zhao
  */
-public final class Api {
-	public interface S {
+public class Api {
+	interface TinyUrl {
 		@GET("/")
-		void getTinyUrl(@Query("q") String q, Callback<Response> callback);
+		Call<Response> getTinyUrl( @Query("q") String q );
 	}
 
-	/**
-	 * The GSON parser.
-	 */
-	private static final Gson sGson = new Gson();
-	private static final String HOST = "https://tinyurl-wrapper.appspot.com/";
-	/**
-	 * Call url of <a href="https://github.com/XinyueZ/tinyurl-wrapper">TinyUrlWrapper</a>.
-	 */
-	private static final String BASE_URL = HOST + "?q=";
+	private static final String             HOST     = "https://tinyurl-wrapper.appspot.com/";
+	private static final retrofit2.Retrofit Retrofit = new Retrofit.Builder().addConverterFactory( GsonConverterFactory.create() )
+																			 .baseUrl( HOST )
+																			 .build();
+
 
 	/**
-	 * Call <a href="https://github.com/XinyueZ/tinyurl-wrapper">TinyUrlWrapper</a> to transform {@code q} into
-	 * tinyurl.
-	 *
-	 * @param q
-	 * 		The original url to transform.
-	 * @param callback
-	 * 		Callback when this call finishes.
-	 */
-	public static final void getTinyUrl(String q, Callback<Response> callback) {
-		RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(HOST).build();
-		S s = restAdapter.create(S.class);
-		s.getTinyUrl(q, callback);
-	}
-
-	/**
-	 * Call <a href="https://github.com/XinyueZ/tinyurl-wrapper">TinyUrlWrapper</a> to transform {@code q} into
-	 * tinyurl.
+	 * Call <a href="https://github.com/XinyueZ/tinyurl-wrapper">TinyUrlWrapper</a> to transform {@code q} into tinyurl.
 	 *
 	 * @param q
 	 * 		The original url to transform.
 	 * @param listener
 	 * 		Callback when this call finishes.
 	 *
-	 * @deprecated Use new API {@link #getTinyUrl}.
+	 * @deprecated Use new API {@link TinyUrl#getTinyUrl}.
 	 */
-	public static void call(String q, TinyUrl4JListener listener) {
-		W w = new W(BASE_URL + q, listener);
-		AsyncTaskCompat.executeParallel(new AsyncTask<W, W, W>() {
+	@Deprecated
+	public static void call( String q, final TinyUrl4JListener listener ) {
+		Call<Response> call = Api.Retrofit.create( TinyUrl.class )
+										  .getTinyUrl( q );
+		call.enqueue( new Callback<Response>() {
 			@Override
-			protected W doInBackground(W... params) {
-				W w = params[0];
-				OkHttpClient client = new OkHttpClient();
-				Request request = new Request.Builder().url(w.url).build();
-				try {
-					com.squareup.okhttp.Response response = client.newCall(request).execute();
-					ResponseBody responseBody = response.body();
-					int responseCode = response.code();
-					if (responseCode >= 300) {
-						responseBody.close();
-						w.r = null;
-					} else {
-						w.r = sGson.fromJson(responseBody.string(), Response.class);
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-					w.r = null;
+			public void onResponse( retrofit2.Response<Response> response ) {
+				if( response.isSuccess() ) {
+					listener.onResponse( response.body() );
+				} else {
+					listener.onResponse( null );
 				}
-				return w;
 			}
 
 			@Override
-			protected void onPostExecute(W w) {
-				super.onPostExecute(w);
-				w.l.onResponse(w.r);
+			public void onFailure( Throwable t ) {
+				listener.onResponse( null );
 			}
-		}, w);
-	}
-
-	private static class W {
-		String url;
-		Response r;
-		TinyUrl4JListener l;
-
-		private W(String url, TinyUrl4JListener l) {
-			this.url = url;
-			this.l = l;
-		}
+		} );
 	}
 }

@@ -16,13 +16,13 @@ import retrofit2.http.Query;
  * @author Xinyue Zhao
  */
 public class Api {
-	interface TinyUrl {
+	public interface TinyUrl {
 		@GET("/")
 		Call<Response> getTinyUrl( @Query("q") String q );
 	}
 
 	private static final String             HOST     = "https://tinyurl-wrapper.appspot.com/";
-	private static final retrofit2.Retrofit Retrofit = new Retrofit.Builder().addConverterFactory( GsonConverterFactory.create() )
+	public static final retrofit2.Retrofit Retrofit = new Retrofit.Builder().addConverterFactory( GsonConverterFactory.create() )
 																			 .baseUrl( HOST )
 																			 .build();
 

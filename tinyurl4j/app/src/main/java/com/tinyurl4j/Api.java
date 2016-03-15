@@ -4,8 +4,8 @@ import com.tinyurl4j.data.Response;
 
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
@@ -43,7 +43,7 @@ public class Api {
 										  .getTinyUrl( q );
 		call.enqueue( new Callback<Response>() {
 			@Override
-			public void onResponse( retrofit2.Response<Response> response ) {
+			public void onResponse( Call<Response> call,retrofit2.Response<Response> response ) {
 				if( response.isSuccess() ) {
 					listener.onResponse( response.body() );
 				} else {
@@ -52,7 +52,7 @@ public class Api {
 			}
 
 			@Override
-			public void onFailure( Throwable t ) {
+			public void onFailure( Call<Response> call, Throwable t ) {
 				listener.onResponse( null );
 			}
 		} );

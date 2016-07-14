@@ -44,7 +44,7 @@ public class Api {
 		call.enqueue( new Callback<Response>() {
 			@Override
 			public void onResponse( Call<Response> call,retrofit2.Response<Response> response ) {
-				if( response.isSuccess() ) {
+				if( response.isSuccessful() ) {
 					listener.onResponse( response.body() );
 				} else {
 					listener.onResponse( null );
